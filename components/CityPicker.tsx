@@ -1,9 +1,9 @@
 "use client";
-import { State, Country } from "country-state-city";
+import { City, Country } from "country-state-city";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Select from "react-select";
-import { GlobeIcon } from "@heroicons/react";
+import { GlobeAsiaAustraliaIcon } from "@heroicons/react/24/solid";
 
 type option = {
 	value: {
@@ -14,7 +14,7 @@ type option = {
 	label: string;
 } | null;
 
-type countryOption = {
+type cityOption = {
 	value: {
 		latitude: string;
 		longitude: string;
@@ -36,26 +36,58 @@ const options = Country.getAllCountries().map((country) => ({
 
 function CityPicker() {
 	const [selectedCountry, setSelectedCountry] = useState<option>(null);
-	const [selectedState, setSelectedState] = useState<countryOption>(null);
+	const [selectedCity, setSelectedCity] = useState<cityOption>(null);
 	const router = useRouter();
 
 	const handleSelectedCountry = (option: option) => {
 		setSelectedCountry(option);
-		setSelectedState(null);
+		setSelectedCity(null);
 	};
 
+	const handleSelectedCity = (option: cityOption) => {
+		setSelectedCity(option);
+		router.push(`/location/${option?.value.name}/${option?.value.latitude}/${option?.value.longitude}`);
+	}
+
 	return (
-		<div>
-			<div>
-				<label htmlFor="country">Country</label>
+		<div className="space-y-4">
+			<div className="space-y-2">
+				<div className="flex items-center space-2 text-white/80">
+					<GlobeAsiaAustraliaIcon className="h-5 w-5 text-white" />
+					<label htmlFor="country">Country</label>
+				</div>
+				<Select
+					placeholder="Select country.."
+					value={selectedCountry}
+					onChange={handleSelectedCountry}
+					className="text-0.6xs focus:outline-none focus:border-none sm:text-base"
+					options={options}
+				/>
 			</div>
-			<Select
-				placeholder="Select country.."
-				value={selectedCountry}
-				onChange={handleSelectedCountry}
-				className="text-0.6xs focus:border-none sm:text-base"
-				options={options}
-			/>
+			{selectedCountry && (
+				<div className="space-y-2">
+					<div className="flex items-center space-2 text-white/80">
+						<GlobeAsiaAustraliaIcon className="h-5 w-5 text-white" />
+						<label htmlFor="country">City</label>
+					</div>
+					<Select
+						placeholder="Select city.."
+						value={selectedCity}
+						onChange={handleSelectedCity}
+						className="text-0.6xs focus:outline-none focus:border-none sm:text-base"
+						options={City.getCitiesOfCountry(selectedCountry.value.isoCode)?.map((city) => ({
+							value: {
+								latitude: city.latitude!,
+								longitude: city.longitude!,
+								countryCode: city.countryCode,
+								name: city.name,
+								stateCode: city.stateCode,
+							},
+							label: city.name,
+						}))}
+					/>
+				</div>
+			)}
 		</div>
 	);
 }
