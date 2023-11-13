@@ -1,3 +1,10 @@
 .custom-text {
 	font-size: 3rem;
 }
+
+@media (max-width: 488px) {
+	.custom-text {
+		font-size: 2rem;
+		line-height: 2rem;
+	}
+}

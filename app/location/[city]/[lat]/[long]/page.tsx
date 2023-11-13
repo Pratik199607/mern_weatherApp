@@ -4,46 +4,42 @@ import React from "react";
 import CalloutCard from "@/components/CalloutCard";
 import StatusCard from "@/components/StatusCard";
 import InformationPanel from "@/components/InformationPanel";
-import TempChart from "@/components/TempChart";
-import RainChart from "@/components/RainChart";
-import HumidityChart from "@/components/HumidityChart";
+// import TempChart from "@/components/TempChart";
+// import RainChart from "@/components/RainChart";
+// import HumidityChart from "@/components/HumidityChart";
+import Dropdown from "./Dropdown";
 
-export const revalidate = 1440;
+export const revalidate = 0;
 
 type Props = {
-    params: {
-        city: string,
-        lat: string,
-        long: string,
-    }
-}
+	params: {
+		city: string;
+		lat: string;
+		long: string;
+	};
+};
 async function WeatherPage({ params: { city, lat, long } }: Props) {
-    const client = getClient();
-    const { data } = await client.query({
-        query: fetchWeatherQuery,
-        variables: {
-            current_weather: true,
-            longitude: long,
-            latitude: lat,
-            timezone: 'IST',
-        }
-    });
+	const client = getClient();
+	const { data } = await client.query({
+		query: fetchWeatherQuery,
+		variables: {
+			current_weather: true,
+			longitude: long,
+			latitude: lat,
+			timezone: "IST",
+		},
+	});
 
 	const resp: Root = data.myQuery;
-	
+
 	return (
 		// Information Panel
 		<div className="flex flex-col min-h-screen md:flex-row">
-			<InformationPanel
-				city={city}
-				lat={lat}
-				long={long}
-				results={resp}
-			/>
+			<InformationPanel city={city} lat={lat} long={long} results={resp} />
 			<div className="flex-1 p-5 lg:p-10">
 				<div className="p-5">
-					<div className="pb-5">
-						<h2 className=" text-xl font-bold">Todays Overview</h2>
+					<div>
+						<h2 className="text-xl font-bold">Todays Overview</h2>
 						<p className="text-sm text-gray-400">
 							Last Updated at: {new Date(resp.current_weather.time).toLocaleString()}(
 							{resp.timezone})
@@ -68,7 +64,7 @@ async function WeatherPage({ params: { city, lat, long } }: Props) {
 						/>
 					</div>
 
-					<div className="grid grid-cols-1 xl:grid-cols-2 gap-5 m-2">
+					<div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mx-2 my-5 xl:m-2">
 						<div>
 							<StatusCard
 								title="UV Index"
@@ -97,9 +93,10 @@ async function WeatherPage({ params: { city, lat, long } }: Props) {
 
 				<hr className="mb-5" />
 				<div className="space-y-3">
-					<TempChart results={resp}/>
-					<RainChart results={resp}/>
-					<HumidityChart results={resp}/>
+					<Dropdown resp={resp} />
+					{/* <TempChart results={resp} />
+					<RainChart results={resp} />
+					<HumidityChart results={resp} /> */}
 				</div>
 			</div>
 		</div>

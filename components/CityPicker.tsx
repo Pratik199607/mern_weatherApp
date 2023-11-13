@@ -1,7 +1,7 @@
 "use client";
 import { City, Country } from "country-state-city";
 import { useRouter } from "next/navigation";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { GlobeAsiaAustraliaIcon } from "@heroicons/react/24/solid";
 
@@ -37,18 +37,19 @@ const options = Country.getAllCountries().map((country) => ({
 function CityPicker() {
 	const [selectedCountry, setSelectedCountry] = useState<option>(null);
 	const [selectedCity, setSelectedCity] = useState<cityOption>(null);
-	const [cityOptions, setCityOptions] = useState<cityOption[]>([]);
 	const router = useRouter();
 
-	const handleSelectedCountry = (option: option) => {
+	const handleSelectedCountry = (option: option = null) => {
 		setSelectedCountry(option);
 		setSelectedCity(null);
 	};
 
-	const handleSelectedCity = (option: cityOption) => {
+	const handleSelectedCity = (option: cityOption = null) => {
 		setSelectedCity(option);
-		router.push(`/location/${option?.value.name}/${option?.value.latitude}/${option?.value.longitude}`);
-	}
+		router.push(
+			`/location/${option?.value.name}/${option?.value.latitude}/${option?.value.longitude}`
+		);
+	};
 
 	useEffect(() => {
 		// Clear the selectedCity when the selectedCountry changes
@@ -64,6 +65,7 @@ function CityPicker() {
 				</div>
 				<Select
 					placeholder="Select country.."
+					id="my-react-select-country"
 					value={selectedCountry}
 					onChange={handleSelectedCountry}
 					className="text-0.6xs focus:outline-none focus:border-none sm:text-base text-gray-700"
@@ -78,6 +80,7 @@ function CityPicker() {
 					</div>
 					<Select
 						placeholder="Select city.."
+						id="my-react-select-city"
 						value={selectedCity}
 						onChange={handleSelectedCity}
 						className="text-0.6xs focus:outline-none focus:border-none sm:text-base text-gray-700"
@@ -86,7 +89,7 @@ function CityPicker() {
 								latitude: city.latitude!,
 								longitude: city.longitude!,
 								countryCode: city.countryCode,
-								name: city.name, 
+								name: city.name,
 								stateCode: city.stateCode,
 							},
 							label: city.name,
